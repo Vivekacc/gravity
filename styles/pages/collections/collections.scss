@@ -1,6 +1,6 @@
 .collections{
 @extend %page;
-
+z-index: 0;
 // background: $color-quicksand;
 // color: $color-quarter-spanish-white;
     
@@ -14,7 +14,8 @@ overflow: hidden;
 
 .collections__titles{
     @extend %vertical-titles;  
-    
+    transition: transform 1s ease;
+
     @include media('<=phone'){
         display: none;
     }
@@ -30,28 +31,36 @@ overflow: hidden;
 .collections__titles__title{
     @extend %vertical-titles__title;
     
-
 }
 
 
 .collections__gallery{
     @extend %cover;
+    z-index: 1;
 }
 
 
 .collections__gallery__wrapper{
     display: flex;
-    align-self: center;
+    align-items: center;
     position: absolute;
+    left: 50%;
     top: 50%;
-    transform: translateY(-50%);
-
+    transform: translate(-44.7rem * 0.5, -50%);
 }
 
 
 .collections__gallery__link{
     display: block;
     margin: 0 5.3rem;
+
+    &:first-child {
+        margin-left: 0;
+      }
+    
+      &:last-child {
+        margin-right: 0;
+      }
 }
 
 
@@ -65,6 +74,7 @@ overflow: hidden;
 .collections__gallery__media__image{
     @extend %cover;
     object-fit: cover;
+    visibility: hidden;
 }
 
 
@@ -83,9 +93,10 @@ overflow: hidden;
     left: 8rem;
     position: absolute;
     opacity: 0;
-
+    transition: opacity 0.4s  ease;
     &--active{
         opacity: 1;
+        transition-delay: 0.4s;
     }
 }
 

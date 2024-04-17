@@ -1,43 +1,43 @@
-@import './base/reset';
+@import '/styles/base/reset';
 
 // ------------------------------------ // ------------------------------------------
 // -------------------------------- U T I L S ---------------------------------------
 // ------------------------------------ // ------------------------------------------
 
-@import './utils/variables';
-@import './utils/functions';
-@import './utils/mixins';
-@import './utils/vendors';
-@import './utils/responsive';
+@import '/styles/utils/variables';
+@import '/styles/utils/functions';
+@import '/styles/utils/mixins';
+@import '/styles/utils/vendors';
+@import '/styles/utils/responsive';
 
 // ------------------------------------ // ------------------------------------------
 // ------------------------------- S H A R E D --------------------------------------
 // ------------------------------------ // ------------------------------------------
 
-@import './shared/descriptions';
-@import './shared/links';
-@import './shared/pages';
-@import './shared/titles';
-@import './shared/vertical-titles';
+@import '/styles/shared/descriptions';
+@import '/styles/shared/links';
+@import '/styles/shared/pages';
+@import '/styles/shared/titles';
+@import '/styles/shared/vertical-titles';
 
 // ------------------------------------ // ------------------------------------------
 // --------------------------------- B A S E ----------------------------------------
 // ------------------------------------ // ------------------------------------------
 
-@import './base/fonts';
-@import './base/base';
+@import '/styles/base/fonts';
+@import '/styles/base/base';
 
 // ------------------------------------ // ------------------------------------------
 // --------------------------- C O M P O N E N T S ----------------------------------
 // ------------------------------------ // ------------------------------------------
 
-@import './components/preloader';
+@import '/styles/components/preloader';
 
 // ------------------------------------ // ------------------------------------------
 // ------------------------------- L A Y O U T S ------------------------------------
 // ------------------------------------ // ------------------------------------------
 
-@import './layout/navigation';
+@import '/styles/layout/navigation';
 
 // ------------------------------------ // ------------------------------------------
 // -------------------------- P A G E S  D I R E C T O R Y --------------------------
@@ -47,7 +47,7 @@
 // Home
 // ------------------------------------
 
-@import './pages/home/home';
+@import '/styles/pages/home/home';
 
 // ------------------------------------ // ------------------------------------
 
@@ -55,10 +55,10 @@
 // About
 // -----
 
-@import './pages/about/about';
-@import './pages/about/content';
-@import './pages/about/gallery';
-@import './pages/about/highlight';
+@import '/styles/pages/about/about';
+@import '/styles/pages/about/content';
+@import '/styles/pages/about/gallery';
+@import '/styles/pages/about/highlight';
 
 // ------------------------------------ // ------------------------------------
 
@@ -66,7 +66,7 @@
 // Collections
 // ------------------------------------
 
-@import './pages/collections/collections';
+@import '/styles/pages/collections/collections';
 
 // ------------------------------------ // ------------------------------------
 
@@ -74,6 +74,6 @@
 // Details
 // ------------------------------------
 
-@import './pages/detail/detail';
+@import '/styles/pages/detail/detail';
 
 // ------------------------------------ // ------------------------------------

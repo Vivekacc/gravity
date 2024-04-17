@@ -9,9 +9,7 @@ export default class Component extends EventEmitter {
     })  {
         super()
         this.selector = element
-        this.selectorChildren = {
-            ...elements
-        }
+        this.selectorChildren = {...elements}
 
         this.create()
         this.addEventListeners()

@@ -12,7 +12,7 @@ const path = require('path')
 const port = 3000
 
 const prismic = require('@prismicio/client')
-const prismicH = require('@prismicio/helpers');
+// const prismicH = require('@prismicio/helpers');
 const { create } = require('domain');
 const console = require('console');
 const UAParser = require('ua-parser-js')
@@ -76,7 +76,7 @@ app.use((req, res, next) => {
 
     // console.log(res.locals.isDesktop,res.locals.isPhone,res.locals.isTablet)  
     res.locals.Link = handleLinkResolver
-    res.locals.prismicH = prismicH
+    res.locals.prismic = prismic
     res.locals.Numbers = index => {
       return  index == 0 ? 'One' : index == 1 ? 'Two' : index == 2 ? 'Three' : index == 3 ? 'Four' : ''; 
     }
@@ -92,12 +92,50 @@ app.set('view engine', 'pug')
 
 
 const handleRequest = async (api) => {
+  const about = await api.getSingle('about')
+  const home = await api.getSingle('home')
   const meta = await api.getSingle('meta')
   const navigation = await api.getSingle('navigation')
   const preloader = await api.getSingle('preloader')
 
+  const collections = await api.getAllByType('collection',{
+    fetchLinks: 'product.image'
+  })
+
+  const assets = []
+
+  home.data.gallery.forEach(item => {
+    assets.push(item.image.url)
+  });
+
+  about.data.gallery.forEach(item => {
+    assets.push(item.image.url)
+  });
+
+  about.data.body.forEach(section => {
+    if (section.slice_type === "gallery")
+    {
+      section.items.forEach(item =>{
+        assets.push(item.image.url)
+      })
+    }
+  });
   
+
+  collections.forEach(collectionz => {
+    
+    collectionz.data.products.forEach(item => {
+      assets.push(item.products_product.data.image.url)
+    });
+  
+  });
+ 
+
   return{
+    about,
+    assets,
+    collections,
+    home,
     meta,
     navigation,
     preloader
@@ -109,15 +147,13 @@ const handleRequest = async (api) => {
 app.get('/', async (req, res) => {
   const api = await initApi(req)
   const defaults = await handleRequest(api)
-  const home = await api.getSingle('home')
 
-  const collections = await api.getAllByType('collection',{ fetchLinks: 'product.image' })
+  // const collections = await api.getAllByType('collection',{ fetchLinks: 'product.image' })
   
 
   res.render('pages/home',{
     ...defaults,
-    collections,
-    home
+    
   })
 })
 
@@ -127,13 +163,12 @@ app.get('/about', async (req, res) => {
 
   const api = await initApi(req)
   const defaults = await handleRequest(api)
-  const about = await api.getSingle('about')
+  // const about = await api.getSingle('about')
 
   // console.log(about)
 
   res.render('pages/about',{
-    ...defaults,
-    about
+    ...defaults
   })
 })
 
@@ -142,16 +177,11 @@ app.get('/collections',async (req, res) => {
   
   const api = await initApi(req)
   const defaults = await handleRequest(api)
-  const home = await api.getSingle('home')
-  const collections = await api.getAllByType('collection',{
-    fetchLinks: 'product.image'
-  })
   
-
+  
   res.render('pages/collections',{
-    ...defaults,
-    collections,
-    home,
+    ...defaults
+    
   })
 })
 
@@ -167,7 +197,8 @@ app.get('/detail/:uid', async (req, res) => {
   
   res.render('pages/detail',{
     ...defaults,
-    product
+    product,
+    
   })
 })
 

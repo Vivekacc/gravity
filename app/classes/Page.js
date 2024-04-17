@@ -1,5 +1,4 @@
 import GSAP from 'gsap'
-import NormalizeWheel from 'normalize-wheel'
 import Prefix from 'prefix'
 
 import each from 'lodash/each'
@@ -7,7 +6,7 @@ import map from 'lodash/each'
 
 import Title from '../animations/Title'
 import Paragraph from '../animations/Paragraph'
-import Highlight from '../animations/Highlight'
+import Highlight from '/app/animations/Highlight'
 import Label from '../animations/Label'
 
 import AsyncLoad from '/app/classes/AsyncLoad'
@@ -28,14 +27,14 @@ export default class Page {
             animationsTitles: '[data-animation="title"]',
             animationsParagraphs: '[data-animation="paragraph"]',
             animationsLabels: '[data-animation="label"]',
-
+            
             preloaders: '[data-src]'
         }
-
+        
         this.id = id
         this.transformPrefix = Prefix('transform')
         
-        this.onMouseWheelEvent = this.onMouseWheel.bind(this)
+        // this.onMouseWheelEvent = this.onMouseWheel.bind(this)
     }
     
     create(){
@@ -55,26 +54,34 @@ export default class Page {
                     this.elements[key] = entry
                 }   else {
                     this.elements[key] = document.querySelectorAll(entry)
-                
-
+                    
+                    
                     if (this.elements[key].length === 0) {
                         this.elements[key] = null
                     }   else if (this.elements[key].length === 1){
                         this.elements[key] = document.querySelector(entry)
                     }
-
+                    
                 }
             })
-
+            
             this.createAnimations()
             this.createPreloader()
-
+            
         }
-
+        
+        
+        createPreloader () {
+            this.preloaders = map(this.elements.preloaders, element => {
+                return new AsyncLoad({element})
+            })
+        }
+        
         createAnimations () {
             
-           this.animations = [];
-
+            this.animations = [];
+            this.animations.length = 0;
+            
             //Titles
             this.animationsTitles = map(this.elements.animationsTitles, element =>{
                 
@@ -119,12 +126,6 @@ export default class Page {
             
         }
 
-        createPreloader () {
-            this.preloaders = map(this.elements.preloaders, element => {
-                return new AsyncLoad({element})
-            })
-        }
-
         show (animation) {
             return new Promise(resolve => {
                 ColorsManager.change({
@@ -163,8 +164,8 @@ export default class Page {
         }
         
         
-        onMouseWheel (event){        
-            const {pixelY} = NormalizeWheel(event)
+        onWheel ({pixelY}){        
+            // const {pixelY} = NormalizeWheel(event)
             
             this.scroll.target += pixelY
         }
@@ -193,11 +194,11 @@ export default class Page {
         }
         
         addEventListeners (){
-            window.addEventListener('mousewheel',this.onMouseWheelEvent)
+            // window.addEventListener('wheel',this.onMouseWheelEvent)
         }
         
         removeEventListeners (){
-            window.removeEventListener('mousewheel',this.onMouseWheelEvent)
+            // window.removeEventListener('wheel',this.onMouseWheelEvent)
         }
         
         destroy() {

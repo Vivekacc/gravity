@@ -6,7 +6,9 @@
     // opacity: 0;
 }
 
-
+.about__wrapper{
+    padding-top: 8rem;
+}
 .about__title{
     @extend %title-100;
 
