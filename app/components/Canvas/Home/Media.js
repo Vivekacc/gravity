@@ -1,8 +1,8 @@
 import Detection from "/app/classes/Detection";
 import GSAP from "gsap";
 import {Mesh, Program} from "ogl";
-import vertex from "/app/shaders/plane-vertex.glsl";
-import fragment from "/app/shaders/plane-fragment.glsl";
+import vertex from "/app/shaders/home-vertex.glsl";
+import fragment from "/app/shaders/home-fragment.glsl";
 
 export default class  {
     constructor ({element, geometry,index, gl, scene , sizes}){
@@ -25,13 +25,6 @@ export default class  {
         const imagz = this.element;
         this.texture = window.TEXTURES[imagz.getAttribute('data-src')];
 
-        // console.log(this.element)
-        // this.texture = new Texture(this.gl)
-        // this.image = new window.Image()
-        // this.image.crossOrigin = 'anonymous'
-        // this.image.src = this.element.getAttribute('data-src')
-        // this.image.onload = _ => (this.texture.image = this.image)
-        
     }
     createProgram(){
         this.program = new Program(
@@ -40,6 +33,8 @@ export default class  {
             fragment,
             uniforms:{
                 uAlpha: {value: 0},
+                uSpeed: {value: 0},
+                uViewportSizes : {value : [this.sizes.width, this.sizes.height]},
                 tMap: {value: this.texture}
             }
         })
@@ -70,7 +65,7 @@ export default class  {
         GSAP.fromTo(this.program.uniforms.uAlpha, {
             value:0
         },{
-            value:1
+            value:0.6
         })
     }
 
@@ -110,11 +105,12 @@ export default class  {
         this.y = (this.bounds.top + y) / window.innerHeight;
         this.mesh.position.y = (this.sizes.height / 2) - (this.mesh.scale.y / 2) - (this.y * this.sizes.height) +this.extra.y ;
     }
-    update(scroll){
+    update(scroll,speed){
         if(!this.bounds) return
         this.updateX(scroll.x)
         this.updateY(scroll.y)
         
+        this.program.uniforms.uSpeed.value = speed
     }
 
 }

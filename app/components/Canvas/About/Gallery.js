@@ -105,13 +105,13 @@ update (scroll) {
         this.scroll.velocity = 1
     }
     
-    function velo(){
+    // function velo(){
     
         this.scroll.target -= this.scroll.velocity
-    }
+    // }
     
     this.scroll.target += distance
-    setTimeout(velo.bind(this), 4500)
+    // setTimeout(velo.bind(this), 4500)
     
     
     this.scroll.current = GSAP.utils.interpolate(this.scroll.current, this.scroll.target, this.scroll.lerp)

@@ -1,6 +1,5 @@
 import {Renderer, Camera, Transform, Box, Program, Mesh } from 'ogl'
-import vertex from '/app/shaders/plane-vertex.glsl'
-import fragment from '/app/shaders/plane-fragment.glsl'
+
 import Home from './Home'
 import About from './About'
 import Collections from './Collections'
@@ -100,17 +99,7 @@ export default class Canvas  {
 
     onPreloaded(){
         this.onChangeEnd(this.template)
-        // if (this.home){
-        //     this.home.onPreloaded()
-        // }
-
-        // if (this.about){
-        //     this.about.onPreloaded()
-        // }
-
-        // if (this.collections){
-        //     this.collections.onPreloaded()
-        // }
+        
     }
 
     onChangeSart(){
@@ -227,9 +216,9 @@ export default class Canvas  {
     }
 
     
-    // if (this.detail){
-    //     this.detail.onTouchDown(value)
-    // }  
+    if (this.detail){
+        this.detail.onTouchDown(value)
+    }  
 }
     
 // ---------------------------------------------------------------------------------------------------
@@ -240,7 +229,6 @@ export default class Canvas  {
         const x = e.touches ? e.touches[0].clientX : e.clientX;
         const y = e.touches ? e.touches[0].clientY : e.clientY;
     
- 
         this.x.end = x;
         this.y.end = y;
 

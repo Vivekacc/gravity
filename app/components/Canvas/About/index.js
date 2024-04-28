@@ -60,17 +60,17 @@ export default class {
             }
             
             
-            onTouchDown (e) {
+            onTouchDown(e) {
              map(this.galleries,gallery => gallery.onTouchDown(e))
              
             }
             
-            onTouchMove (e) {
+            onTouchMove(e) {
                 map(this.galleries,gallery => gallery.onTouchMove(e))
                 
             }
             
-            onTouchUp (e) {
+            onTouchUp(e) {
                 map(this.galleries,gallery => gallery.onTouchUp(e))
             
             }
@@ -80,7 +80,7 @@ export default class {
 
             update (scroll) {
                 
-        // const y = scroll.current / window.innerHeight;
+        const y = scroll.current / window.innerHeight;
 
                 map(this.galleries, gallery => gallery.update(scroll))
                     //   console.log('log')     

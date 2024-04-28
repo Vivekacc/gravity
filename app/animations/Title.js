@@ -18,7 +18,7 @@ export default class Title extends Animation{
         split({element: this.element , append:true})
 
         this.elementLinesSpans = this.element.querySelectorAll('span span')
-        this.onResize()
+        // this.onResize()
     }
     
     animateIn(){

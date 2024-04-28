@@ -25,14 +25,6 @@ export default class  {
         const image = this.element.querySelector('img')
         this.texture = window.TEXTURES[image.getAttribute('data-src')]
         
-        
-        // this.texture = new Texture(this.gl)
-        // this.image = new window.Image()
-        // this.image.crossOrigin = 'anonymous'
-        // this.image.src = image.getAttribute('data-src')
-        // this.image.onload = _ => (this.texture.image = this.image)
-
-        
     }
     createProgram(){
         this.program = new Program(
@@ -118,8 +110,11 @@ export default class  {
     }
     updateY(y = 0){
         this.y = (this.bounds.top + y) / window.innerHeight;
+        
+        const ex = Detection.isPhone ? 20 : 40
+        
         this.mesh.position.y = (this.sizes.height / 2) - (this.mesh.scale.y / 2) - (this.y * this.sizes.height)  ;
-        this.mesh.position.y += Math.cos((this.mesh.position.x / this.sizes.width ) * Math.PI * 0.1) * 40 - 40 ;
+        this.mesh.position.y += Math.cos((this.mesh.position.x / this.sizes.width ) * Math.PI * 0.1) * ex - ex ;
     }
     update(scroll){
         if(!this.bounds) return
@@ -132,7 +127,6 @@ export default class  {
 
 }
 // updateY(Y=0){
-    // const extra = Detection.isPhone() ? 20 : 40
 
     // 40-40 => extra-extra
 // }

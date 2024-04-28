@@ -73,19 +73,18 @@ class App{
     }
     
     onPreloaded(){
-      this.onResize();
+        this.onResize();
         this.canvas.onPreloaded()
         this.preloader.destroy()
-
         this.page.show()
     }
     
-    // onPopState(){
-    //     this.onChange({
-    //         url: window.location.pathname,
-    //         push : false,            
-    //     })
-    // }
+    onPopState(){
+        this.onChange({
+            url: window.location.pathname,
+            push : false,            
+        })
+    }
 
     async onChange ({url, push = true}) { 
         this.canvas.onChangeSart(this.template)
@@ -144,32 +143,53 @@ class App{
         }
 
         onTouchDown(e) {
+          
+          if (this.page && this.page.update) {
+            this.page.onTouchDown(e);
+          }
             if (this.canvas && this.canvas.onTouchDown) {
               this.canvas.onTouchDown(e);
             }
+
+            // if (this.pages.about && this.pages.about.update) {
+            //   this.pages.about.onTouchDown(e);
+            // }
           }
         
           onTouchMove(e) {
+            if (this.page && this.page.update) {
+              this.page.onTouchMove(e);
+            }
             if (this.canvas && this.canvas.onTouchMove) {
               this.canvas.onTouchMove(e);
             }
+            
+            // if (this.pages.about && this.pages.about.update) {
+            //   this.pages.about.onTouchMove(e);
+            // }
           }
-        
+          
           onTouchUp(e) {
+            if (this.page && this.page.update) {
+              this.page.onTouchUp(e);
+            }
             if (this.canvas && this.canvas.onTouchUp) {
               this.canvas.onTouchUp(e);
             }
+            // if (this.pages.about && this.pages.about.update) {
+            //   this.pages.about.onTouchUp(e);
+            // }
           }
-
+          
           onWheel(e) {
             const normalizeWheel = NormalizeWheel(e)
-
+            
             if (this.page && this.page.update) {
-                this.page.onWheel(normalizeWheel);
+              this.page.onWheel(normalizeWheel);
             }
             
             if (this.canvas && this.canvas.update) {
-                this.canvas.onWheel(normalizeWheel);
+              this.canvas.onWheel(normalizeWheel);
               }
                         
           }
@@ -189,6 +209,7 @@ class App{
         }
         
         addEventListeners(){
+          window.addEventListener('popstate',this.onPopState.bind(this))
             
             window.addEventListener('wheel', this.onWheel.bind(this));
             window.addEventListener('mousedown', this.onTouchDown.bind(this));
@@ -199,8 +220,7 @@ class App{
             window.addEventListener('touchmove', this.onTouchMove.bind(this));
             window.addEventListener('touchend', this.onTouchUp.bind(this));
 
-            window.addEventListener('resize',this.onResize.bind(this))
-            // window.addEventListener('popstate',this.onPopState.bind(this))
+            window.addEventListener('resize',this.onResize.bind(this));
         }
 
         addLinkListeners() {

@@ -10,7 +10,7 @@ import { split } from 'utils/text'
 import { image } from '@prismicio/client';
 
 export default class Preloader extends Component {
-    constructor(canvas){
+    constructor({canvas}){
         super({
             element:'.preloader',
             elements:{
@@ -41,48 +41,37 @@ export default class Preloader extends Component {
         this.createLoader()
     }
 
-    createLoader() {
-      window.ASSETS.forEach(image => {
-        const media = new window.Image()
-        console.log(media)
-        
-        const texturz = new Texture(this.canvas.gl,{
-          generateMipmaps: false
-        })
+createLoader () {
+  window.ASSETS.forEach(image => {
+    const texture = new Texture(this.canvas.gl, {
+      generateMipmaps: false
+    })
 
-        media.crossOrigin = 'anonymous'
-        media.src = image
-        media.onload = _ => {
-          texturz.image = media
-          this.onAssetLoaded(media)
-        }
-        window.TEXTURES[image] = texturz
-      });
+    const media = new window.Image()
 
-        // each(this.elements.images, element =>{
-            
-        //     const image = new Image();
-        //     image.onload = (_) => this.onAssetLoaded(image)
-        //     image.src = element.getAttribute('data-src')
-// tempfix
-// ideal code
-            // element.onload = (_) => this.onAssetLoaded(element)
-            // element.src = element.getAttribute("data-src")
-        
-        // })
+    media.crossOrigin = 'anonymous'
+    media.src = image
+    media.onload = _ => {
+      texture.image = media
+
+      this.onAssetLoaded()
     }
 
-    onAssetLoaded(image){
-        this.length += 1
-        // console.log(image)
-        const percent  = this.length / this.elements.ASSETS.length
-        // console.log(Math.round(percent*100) )
-        this.elements.numberText.innerHTML = `${Math.round(percent * 100)}%`
-        if (percent === 1){
-            this.onLoaded()
-        }
-    
-    }
+    window.TEXTURES[image] = texture
+  })
+}
+
+onAssetLoaded(image) {
+  this.length += 1
+
+  const percent = this.length / window.ASSETS.length
+
+  this.elements.numberText.innerHTML = `${Math.round(percent * 100)}%`
+  if (percent === 1) {
+    this.onLoaded()
+  }
+}
+
     
     onLoaded(){
 
