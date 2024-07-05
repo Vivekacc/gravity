@@ -149,38 +149,20 @@ class App{
           if (this.page && this.page.update) {
             this.page.onTouchDown(e);
           }
-            if (this.canvas && this.canvas.onTouchDown) {
-              this.canvas.onTouchDown(e);
-            }
-
-            // if (this.pages.about && this.pages.about.update) {
-            //   this.pages.about.onTouchDown(e);
-            // }
           }
         
           onTouchMove(e) {
             if (this.page && this.page.update) {
               this.page.onTouchMove(e);
             }
-            if (this.canvas && this.canvas.onTouchMove) {
-              this.canvas.onTouchMove(e);
-            }
             
-            // if (this.pages.about && this.pages.about.update) {
-            //   this.pages.about.onTouchMove(e);
-            // }
           }
           
           onTouchUp(e) {
             if (this.page && this.page.update) {
               this.page.onTouchUp(e);
             }
-            if (this.canvas && this.canvas.onTouchUp) {
-              this.canvas.onTouchUp(e);
-            }
-            // if (this.pages.about && this.pages.about.update) {
-            //   this.pages.about.onTouchUp(e);
-            // }
+            
           }
           
           onWheel(e) {
