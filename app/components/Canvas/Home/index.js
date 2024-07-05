@@ -48,7 +48,9 @@ export default class {
         
         this.createGeometry()
         this.createGallery()
-    
+        this.onResize({
+            sizes: this.sizes,
+        })
         this.group.setParent(this.scene)
         this.show()
     }
@@ -109,6 +111,7 @@ export default class {
             this.speed.target = 1
             this.scrollCurrent.x = this.scroll.x;
             this.scrollCurrent.y = this.scroll.y;
+            // this.scrollCurrent = this.scroll;
             }
 
             onTouchMove ({ x, y }) {
@@ -132,7 +135,7 @@ export default class {
             }
 
             update () {
-                if (!this.galleryBounds) return
+                // if (!this.galleryBounds) return
 
                 
                 this.speed.current = GSAP.utils.interpolate(this.speed.current, this.speed.target, this.speed.lerp)

@@ -1,15 +1,17 @@
+import { Plane, Transform} from 'ogl';
 import GSAP from 'gsap';
+import Prefix from 'prefix';
 import map from 'lodash/map';
 import Media from './Media';
-import Prefix from 'prefix';
-import { Plane, Transform, Mesh } from 'ogl';
 
 
 export default class {
-    constructor({gl,scene,sizes}){
+    constructor({gl,scene,sizes,transition}){
+        this.id = 'collections'
         this.gl = gl
         this.sizes = sizes
         this.scene = scene
+        this.transition = transition
 
         this.transformPrefix = Prefix('transform')
         this.group = new Transform()
@@ -38,7 +40,9 @@ export default class {
         
         this.createGeometry()
         this.createGallery()
-    
+        this.onResize({
+            sizes: this.sizes,
+          });
         this.group.setParent(this.scene)
         this.show()
     }
@@ -48,7 +52,7 @@ export default class {
     }
     
     createGallery(){
-        this.gallery = new Transform()
+        // this.gallery = new Transform()
         
         this.medias = map(this.mediasElement, (element, index) => {
             
@@ -65,15 +69,41 @@ export default class {
     }
 
     
-    show(){
-        map(this.medias, media => media.show())
-        
-    }
+    async show() {
+        if (this.transition) {
+          const { src } = this.transition.mesh.program.uniforms.tMap.value.image;
+          const texture = window.TEXTURES[src];
+          const media = this.medias.find((media) => media.texture === texture);
+          const scroll = -media.bounds.left - media.bounds.width / 2 + window.innerWidth / 2; // prettier-ignore
     
-    hide(){
-        map(this.medias, media => media.hide())
-
-    }
+          this.update();
+    
+          this.transition.animate(
+            {
+              position: { x: 0, y: media.mesh.position.y, z: 0 },
+              rotation: media.mesh.rotation,
+              scale: media.mesh.scale,
+            },
+            (_) => {
+              media.opacity.multiplier = 1;
+    
+              map(this.medias, (item) => {
+                if (media !== item) {
+                  item.show();
+                }
+              });
+    
+              this.scroll.current = this.scroll.target = this.scroll.start = this.scroll.last = scroll; // prettier-ignore
+            }
+          );
+        } else {
+          map(this.medias, (media) => media.show());
+        }
+      }
+    
+      hide() {
+        map(this.medias, (media) => media.hide());
+      }
 
     
             onResize (e) {
@@ -125,11 +155,13 @@ export default class {
                     }
                 })
                 this.titlesElement.style[this.transformPrefix] = `translateY(-${25 * selectedCollection}%) translate(-50%,50%) rotate(-90deg)`
+            
+                // this.media = this.medias[index]
             }
             
             
             update () {
-                if (!this.Bounds) return
+                // if (!this.Bounds) return
                 this.scroll.target = GSAP.utils.clamp( -this.scroll.limit, 0, this.scroll.target)
                 this.scroll.current = GSAP.utils.interpolate(this.scroll.current, this.scroll.target, this.scroll.lerp)
                 this.galleryElement.style[this.transformPrefix] = `translateX(${this.scroll.current}px)`
@@ -155,6 +187,8 @@ export default class {
     
                 map(this.medias, (media, index) => {
                  media.update(this.scroll.current, this.index)
+                //  media.mesh.rotation.z = Math.abs( GSAP.utils.mapRange(0, 1, -0.2, 0.2, index / (this.medias.length - 1)) ) - 0.1;
+                //  media.mesh.position.y += Math.cos((media.mesh.position.x / this.sizes.width) * Math.PI * 0.1) * 75 - 75
                 })
             }
 

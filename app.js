@@ -178,7 +178,6 @@ app.get('/collections',async (req, res) => {
   const api = await initApi(req)
   const defaults = await handleRequest(api)
   
-  
   res.render('pages/collections',{
     ...defaults
     
@@ -193,11 +192,12 @@ app.get('/detail/:uid', async (req, res) => {
     fetchLinks: 'collection.title'
   })
 
+  console.log(product)
 
   
   res.render('pages/detail',{
     ...defaults,
-    product,
+    product
     
   })
 })

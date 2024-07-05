@@ -1,8 +1,8 @@
 import Detection from "/app/classes/Detection";
 import GSAP from "gsap";
 import {Mesh, Program} from "ogl";
-import vertex from "/app/shaders/plane-vertex.glsl";
-import fragment from "/app/shaders/plane-fragment.glsl";
+import vertex from "/app/shaders/collections-vertex.glsl";
+import fragment from "/app/shaders/collections-fragment.glsl";
 
 export default class  {
     constructor ({element, geometry,index, gl, scene , sizes}){
@@ -16,24 +16,28 @@ export default class  {
             x: 0,
             y: 0
         }
+        
+        this.opacity = {
+            current : 0,
+            target : 0,
+            lerp : 0.1,
+            multiplier : 0
+        }
 
         this.createTexture()
         this.createProgram()
         this.createMesh()
+        this.createBound({
+            sizes: this.sizes
+        })
     }
     createTexture(){
         const imz = this.element.querySelector('.collections__gallery__media__image')
         this.texture = window.TEXTURES[imz.getAttribute('data-src')]
-        
-        // this.texture = new Texture(this.gl)
-        // this.image = new window.Image()
-        // this.image.crossOrigin = 'anonymous'
-        // this.image.src = image.getAttribute('data-src')
-        // this.image.onload = _ => (this.texture.image = this.image)
+  
     }
     createProgram(){
-        this.program = new Program(
-            this.gl,{
+        this.program = new Program(this.gl,{
             vertex,
             fragment,
             uniforms:{
@@ -59,22 +63,22 @@ export default class  {
         
         this.updateScale()
         this.updateX()
-        this.updateY()
+        // this.updateY()
 
     }
 
     show(){
-        GSAP.fromTo(this.program.uniforms.uAlpha, {
-            value:0
+        GSAP.fromTo(this.opacity, {
+            multiplier : 0
         },{
-            value:1
+            multiplier : 1
         })
     }
 
     hide(){
 
-        GSAP.to(this.program.uniforms.uAlpha,{
-            value:0
+        GSAP.to(this.opacity,{
+            multiplier: 0
         })
     }
 
@@ -107,11 +111,25 @@ export default class  {
         this.y = (this.bounds.top + y) / window.innerHeight;
         this.mesh.position.y = (this.sizes.height / 2) - (this.mesh.scale.y / 2) - (this.y * this.sizes.height) + this.extra.y ;
     }
-    update(scroll){
-        if(!this.bounds) return
+    update(scroll,index){
+        // if(!this.bounds) return
         this.updateX(scroll)
         this.updateY()
-        
+        const amplitude = 0.1;
+        const frequency = 1;
+
+    // this.mesh.rotation.z = -0.02 * Math.PI * Math.sin(this.index / frequency);
+    // this.mesh.position.y = amplitude * Math.sin(this.index / frequency);
+
+
+        this.opacity.target = this.index === index ? 1 : 0.4
+
+        this.opacity.current = GSAP.utils.interpolate(this.opacity.current, this.opacity.target, this.opacity.lerp)
+
+        this.program.uniforms.uAlpha.value = this.opacity.current * this.opacity.multiplier
+        this.program.uniforms.uAlpha.value = this.opacity.multiplier * this.opacity.current; 
+
+
     }
 
 }

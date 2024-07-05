@@ -82,13 +82,15 @@ class App{
     onPopState(){
         this.onChange({
             url: window.location.pathname,
-            push : false,            
+            push : true,            
         })
     }
 
     async onChange ({url, push = true}) { 
-        this.canvas.onChangeSart(this.template)
+        this.canvas.onChangeSart(this.template,url)
+
         await this.page.hide()
+        
         const request = await window.fetch(url)
         
         if (request.status === 200){
@@ -128,9 +130,9 @@ class App{
         }
 
         onResize (){
-          //  if (this.canvas && this.canvas.onResize){
-          //       this.canvas.onResize()
-          //  }
+           if (this.canvas && this.canvas.onResize){
+                this.canvas.onResize()
+           }
             if (this.page && this.page.onResize) {
                 this.page.onResize()
               }
@@ -196,7 +198,6 @@ class App{
         
         update(){
 
-            
             if (this.page && this.page.update) {
                 this.page.update();
             }

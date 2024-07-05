@@ -53,7 +53,6 @@ export default class Page {
       distance: 0,
       end: 0,
     };
-    
 
     this.speed = {
       current: 0,
@@ -200,41 +199,26 @@ export default class Page {
       this.isDown = true
       // this.speed.target = 1
       this.y.start = e.touches ? e.touches[0].clientY : e.clientY;
-      // this.scroll.last = this.y.start;
-      // this.scroll.last = this.scroll.current ;
-
-      // console.log("start",this.y.start)
     }
   
   onTouchMove(e) {
     if (!this.isDown) return
     const y = e.touches ? e.touches[0].clientY : e.clientY;
     this.y.end = y;
-
-    const Distance = this.y.start - this.y.end;
-
-    // console.log('Dis',Distance)
     
-    this.scroll.target += (Distance * 0.06);
     
-    // console.log('sis',this.scroll.target)
-    
-    // const Distance = - this.y.start + this.y.end;
-    // this.scroll.target =  this.scroll.last - Distance;
+    const Distance = - this.y.start + this.y.end;
+    this.scroll.target =  (-Distance) + (this.scroll.last/8) ;
+    // console.log('start',Distance) 
     // this.scroll.target = this.scroll.last - (Distance/8);
-    // console.log('Dis',Distance) 
-    // console.log('scroll',this.scroll.target)
-    // console.log('move',this.y.end) 
+// console.log('scroll',this.scroll.target)
   }
-  
+
   onTouchUp(e) {
     this.isDown = false
     // this.speed.target = 0
     const y = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
-    // this.scroll.target = y;
-    // this.y.end = y;
-    // console.log('up',this.y.end) 
-    // this.scroll.target = this.y.start - this.y.end;
+    this.scroll.target = y;
   }
 
   onWheel({ pixelY }) {
@@ -244,38 +228,36 @@ export default class Page {
   // Loop
 
   update() {
-  
+    // const h = this.scroll.current / window.innerHeight;
+    // this.speed.current = GSAP.utils.interpolate(this.speed.current, this.speed.target, this.speed.lerp)
     // this.scroll.target = GSAP.utils.clamp( -this.scroll.limit, 0, this.scroll.target)
-    // this.scroll.target = GSAP.utils.clamp( this.y.end, this.scroll.limit, this.scroll.target)
+                   
+    // this.scroll.target = GSAP.utils.clamp( this.y.start, window.innerHeight, this.scroll.target);
+    // this.scroll.last = GSAP.utils.clamp( 0, this.scroll.limit, this.scroll.target);
+    // console.log('target',this.scroll.target)
+
     
-    // ----------------------------------------------------------------------------
-    // OG CODE
-  
-    this.scroll.target = GSAP.utils.clamp( 0, this.scroll.limit, this.scroll.target);
-
-    this.scroll.current = GSAP.utils.interpolate( this.scroll.current, this.scroll.target, 0.35);
-
-
-    if (this.scroll.current < 0.01) {
-      this.scroll.current = 0;
-    }
-
+    this.scroll.current = GSAP.utils.interpolate( this.scroll.current, this.scroll.target, 0.05);
+    // console.log('current',this.scroll.current)
+        if (this.scroll.current < 0.01) {
+          this.scroll.current = 0;
+        }
+        
         if (this.elements.wrapper) {
           this.elements.wrapper.style[
             this.transformPrefix
           ] = `translateY(-${this.scroll.current}px)`;
         }
-        // OG CODE
-        // ----------------------------------------------------------------------------------
+        
         // this.scroll.current = GSAP.utils.interpolate(this.y.current, this.y.target, this.y.lerp)
-//     if (this.scroll.target < this.scroll.current){
-//       this.y.direction = 'top'
-//       // console.log('top')
-// }
-// else if (this.scroll.target > this.scroll.current){
-//       this.y.direction = 'bottom'
-//       // console.log('bottom')
-// }
+    if (this.scroll.target < this.scroll.current){
+      this.y.direction = 'top'
+      // console.log('top')
+}
+else if (this.scroll.target > this.scroll.current){
+      this.y.direction = 'bottom'
+      // console.log('bottom')
+}
 
 
   }

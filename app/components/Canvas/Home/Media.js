@@ -20,6 +20,9 @@ export default class  {
         this.createTexture()
         this.createProgram()
         this.createMesh()
+        this.createBound({
+            sizes:this.sizes
+        })
     }
     createTexture(){
         const imagz = this.element;
@@ -106,7 +109,7 @@ export default class  {
         this.mesh.position.y = (this.sizes.height / 2) - (this.mesh.scale.y / 2) - (this.y * this.sizes.height) +this.extra.y ;
     }
     update(scroll,speed){
-        if(!this.bounds) return
+        // if(!this.bounds) return
         this.updateX(scroll.x)
         this.updateY(scroll.y)
         

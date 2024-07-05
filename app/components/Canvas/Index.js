@@ -1,9 +1,12 @@
-import {Renderer, Camera, Transform, Box, Program, Mesh } from 'ogl'
+import GSAP from 'gsap'
+import {Renderer, Camera, Transform} from 'ogl'
 
 import Home from './Home'
 import About from './About'
 import Collections from './Collections'
-// import Detail from './Detail'
+import Detail from './Detail'
+import Transition from './Transition'
+
 export default class Canvas  {
 
     constructor({template}){
@@ -87,7 +90,8 @@ export default class Canvas  {
         this.collections = new Collections({
             gl: this.gl,
             scene:this.scene,
-            sizes: this.sizes
+            sizes: this.sizes,
+            transition: this.transition,
         })
     }
 
@@ -97,16 +101,33 @@ export default class Canvas  {
         this.collections = null
     }
 
+
+    createDetail() {
+        this.detail = new Detail({
+          gl: this.gl,
+          scene: this.scene,
+          sizes: this.sizes,
+          transition: this.transition,
+        });
+      }
+    
+      destroyDetail() {
+        if (!this.detail) return;
+    
+        this.detail.destroy();
+        this.detail = null;
+      }
+
     onPreloaded(){
         this.onChangeEnd(this.template)
         
     }
 
-    onChangeSart(){
+    onChangeSart(template,url){
         if (this.home){
             this.home.hide()
         }
-
+        
         if (this.about){
             this.about.hide()
         }
@@ -114,13 +135,29 @@ export default class Canvas  {
         if (this.collections){
             this.collections.hide()
         }
+       
+        if (this.detail) {
+            this.detail.hide();
+        }
 
-        // if (this.detail){
-        //     this.detail.hide()
-        // }
+        this.collectionsToDetail = this.template === 'collections' && url.indexOf('detail') > -1
+        this.detailToCollections = this.template === 'detail' && url.indexOf('collections') > -1
+
+        if (this.collectionsToDetail || this.detailToCollections){
+            this.transition = new Transition({
+                // collections : this.collections,
+                gl : this.gl,
+                scene : this.scene,
+                sizes : this.sizes,
+                url : this.url
+            })
+            this.transition.setElement(this.collections || this.detail);
+        }
+        
+
     }
 
-    onChangeEnd(template){
+    onChangeEnd(template,url){
 
         if (template === 'home'){
             this.createHome()
@@ -134,20 +171,20 @@ export default class Canvas  {
             this.destroyAbout()
         }
 
-
         if (template === 'collections'){
-            // this.gl.canvas.style.zIndex = 1000
             this.createCollections()
         } else if (this.collections){
-            // this.gl.canvas.style.zIndex = ''
             this.destroyCollections()
         }
+      
+        if (template === 'detail'){
+            this.createDetail()
+        } else if (this.detail){
+            this.destroyDetail()
+        }   
 
-        // if (template === 'detail'){
-        //     this.createDetail()
-        // } else if (this.detail){
-            // this.destroyDetail()
-        // }   
+        this.template = template
+
     }
 
     onResize(){
@@ -183,32 +220,31 @@ export default class Canvas  {
             this.collections.onResize(value)
         }   
 
-        // if (this.detail){
-        //     this.detail.onResize(value)
-        // }   
+        if (this.detail){
+            this.detail.onResize(value)
+        }   
     }
 
     
-    onTouchDown(e) {
-        this.isDown = true
+onTouchDown(e) {
+    this.isDown = true
 
-        this.x.start = e.touches ? e.touches[0].clientX : e.clientX;
-        this.y.start = e.touches ? e.touches[0].clientY : e.clientY;
-
-        
-        const value = {
-            x: this.x,
-            y: this.y,
-        }
+    this.x.start = e.touches ? e.touches[0].clientX : e.clientX;
+    this.y.start = e.touches ? e.touches[0].clientY : e.clientY;
 
     
-        if (this.home) {
-          this.home.onTouchDown(value)
-      }
+    const value = {
+        x: this.x,
+        y: this.y,
+    }
 
-        if (this.about) {
-            this.about.onTouchDown(value)
+    
+    if (this.home) {
+        this.home.onTouchDown(value)
+    }
 
+    if (this.about) {
+        this.about.onTouchDown(value)
     }
 
     if (this.collections) {
@@ -244,20 +280,19 @@ export default class Canvas  {
 
         if (this.home) {
             this.home.onTouchMove(value)
-      }
+        }
       
         if (this.about) {
             this.about.onTouchMove(value)
-    }
+        }
 
         if (this.collections) {
             this.collections.onTouchMove(value)
         }
 
-        
-        // if (this.detail){
-        //     this.detail.onTouchMove(value)
-        // }  
+        if (this.detail){
+            this.detail.onTouchMove(value)
+        }  
 }
 
 
@@ -283,25 +318,28 @@ export default class Canvas  {
 
         if (this.home) {
             this.home.onTouchUp(value)
-      }
+        }
 
-      if (this.about) {
-        this.about.onTouchUp(value) 
-    }
+        if (this.about) {
+            this.about.onTouchUp(value) 
+        }
 
-    if (this.collections) {
-        this.collections.onTouchUp(value)
-    }
-
+        if (this.collections) {
+            this.collections.onTouchUp(value)
+        }
     
-    // if (this.detail){
-    //     this.detail.onTouchUp(value)
-    // }  
+        if (this.detail){
+            this.detail.onTouchUp(value)
+        }  
 }
     onWheel(e){
         if (this.home) {
             this.home.onWheel(e)
         }
+ 
+    if (this.collections) {
+        this.collections.onWheel(e);
+      }
     }
 
     update(scroll){
@@ -318,10 +356,9 @@ export default class Canvas  {
             this.collections.update(scroll)
         }
 
-        
-        // if (this.detail){
-        //     this.detail.update(value)
-        // }  
+        if (this.detail){
+            this.detail.update(scroll)
+        }  
 
         this.renderer.render({
             camera:this.camera,

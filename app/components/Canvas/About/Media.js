@@ -1,6 +1,6 @@
-import Detection from "/app/classes/Detection";
+import {Mesh, Program, Texture} from "ogl";
 import GSAP from "gsap";
-import {Mesh, Program} from "ogl";
+import Detection from "/app/classes/Detection";
 import vertex from "/app/shaders/plane-vertex.glsl";
 import fragment from "/app/shaders/plane-fragment.glsl";
 
@@ -20,15 +20,17 @@ export default class  {
         this.createTexture()
         this.createProgram()
         this.createMesh()
+        this.createBound({
+            sizes:this.sizes
+        })
     }
     createTexture(){
         const image = this.element.querySelector('img')
         this.texture = window.TEXTURES[image.getAttribute('data-src')]
-        
+        console.log(this.texture)
     }
     createProgram(){
-        this.program = new Program(
-            this.gl,{
+        this.program = new Program(this.gl,{
             vertex,
             fragment,
             uniforms:{
@@ -68,7 +70,6 @@ export default class  {
     }
 
     hide(){
-
         GSAP.to(this.program.uniforms.uAlpha,{
             value:0
         })
@@ -117,7 +118,7 @@ export default class  {
         this.mesh.position.y += Math.cos((this.mesh.position.x / this.sizes.width ) * Math.PI * 0.1) * ex - ex ;
     }
     update(scroll){
-        if(!this.bounds) return
+        // if(!this.bounds) return
         this.updateRotation()
         this.updateScale()
         this.updateX(scroll)
