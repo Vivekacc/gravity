@@ -27,7 +27,6 @@ export default class  {
     createTexture(){
         const image = this.element.querySelector('img')
         this.texture = window.TEXTURES[image.getAttribute('data-src')]
-        console.log(this.texture)
     }
     createProgram(){
         this.program = new Program(this.gl,{
@@ -84,9 +83,7 @@ export default class  {
     
     updateRotation(){
         this.mesh.rotation.z = GSAP.utils.mapRange(
-            -this.sizes.width / 2, this.sizes.width / 2,
-            Math.PI * 0.1, -Math.PI * 0.1,
-            this.mesh.position.x
+            -this.sizes.width / 2, this.sizes.width / 2, Math.PI * 0.1, -Math.PI * 0.1, this.mesh.position.x
             )
     }
 
@@ -97,10 +94,10 @@ export default class  {
         this.mesh.scale.x = this.sizes.width * this.width;
         this.mesh.scale.y = this.sizes.height * this.height;
 
-        const scale = GSAP.utils.mapRange(0,this.sizes.width / 2,0.1,0,Math.abs(this.mesh.position.x))
+        // const scale = GSAP.utils.mapRange(0,this.sizes.width / 2,0.1,0,Math.abs(this.mesh.position.x))
 
-        this.mesh.scale.x += scale
-        this.mesh.scale.y += scale
+        // this.mesh.scale.x += scale
+        // this.mesh.scale.y += scale
 
     }
     updateX(x = 0){
@@ -115,7 +112,8 @@ export default class  {
         const ex = Detection.isPhone ? 20 : 40
         
         this.mesh.position.y = (this.sizes.height / 2) - (this.mesh.scale.y / 2) - (this.y * this.sizes.height)  ;
-        this.mesh.position.y += Math.cos((this.mesh.position.x / this.sizes.width ) * Math.PI * 0.1) * ex - ex ;
+        // this.mesh.position.y += Math.cos((this.mesh.position.x / this.sizes.width ) * Math.PI * 0.1) * ex - ex ;
+        this.mesh.position.y += Math.cos((this.mesh.position.x / this.sizes.width ) * Math.PI * 0.1) * 58 - 58 ;
     }
     update(scroll){
         // if(!this.bounds) return

@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 import GSAP from 'gsap';
-// 
+
 import Prefix from 'prefix';
 
 import each from 'lodash/each';
 import map from 'lodash/map';
-import NormalizeWheel from 'normalize-wheel'
+
 import Title from 'animations/Title';
 import Paragraph from 'animations/Paragraph';
 import Label from 'animations/Label';
@@ -21,7 +21,7 @@ export default class Page {
     this.selectorChildren = {
       ...elements,
 
-      animationsHighlights: '[data-animation="highlight"]',
+      aimationsHighlights: '[data-animation="highlight"]',
       animationsTitles: '[data-animation="title"]',
       animationsParagraphs: '[data-animation="paragraph"]',
       animationsLabels: '[data-animation="label"]',
@@ -32,9 +32,6 @@ export default class Page {
     this.id = id;
 
     this.transformPrefix = Prefix('transform');
-
-    
-
   }
 
   create() {
@@ -47,19 +44,6 @@ export default class Page {
       last: 0,
       limit: 0,
     };
-
-    this.y = {
-      start: 0,
-      distance: 0,
-      end: 0,
-    };
-    
-
-    this.speed = {
-      current: 0,
-      target: 0,
-      lerp: 0.1,
-  };
 
     each(this.selectorChildren, (entry, key) => {
       if (
@@ -130,8 +114,8 @@ export default class Page {
 
     // Highlights
 
-    this.animationsHighlights = map(
-      this.elements.animationsHighlights,
+    this.aimationsHighlights = map(
+      this.elements.aimationsHighlights,
       (element) => {
         return new Highlight({
           element,
@@ -139,7 +123,7 @@ export default class Page {
       }
     );
 
-    this.animations.push(...this.animationsHighlights);
+    this.animations.push(...this.aimationsHighlights);
   }
 
   show(animation) {
@@ -186,55 +170,17 @@ export default class Page {
   }
 
   // Events
+  onTouchDown(e){}
+  onTouchMove(e){}
+  onTouchUp(e){}
 
   onResize() {
     if (this.elements.wrapper) {
-      this.scroll.limit = this.elements.wrapper.clientHeight - window.innerHeight;
+      this.scroll.limit =
+        this.elements.wrapper.clientHeight - window.innerHeight;
     }
 
     each(this.animations, (animation) => animation.onResize());
-  }
-
-  
-    onTouchDown(e) {
-      this.isDown = true
-      // this.speed.target = 1
-      this.y.start = e.touches ? e.touches[0].clientY : e.clientY;
-      // this.scroll.last = this.y.start;
-      // this.scroll.last = this.scroll.current ;
-
-      // console.log("start",this.y.start)
-    }
-  
-  onTouchMove(e) {
-    if (!this.isDown) return
-    const y = e.touches ? e.touches[0].clientY : e.clientY;
-    this.y.end = y;
-
-    const Distance = this.y.start - this.y.end;
-
-    // console.log('Dis',Distance)
-    
-    this.scroll.target += (Distance * 0.06);
-    
-    // console.log('sis',this.scroll.target)
-    
-    // const Distance = - this.y.start + this.y.end;
-    // this.scroll.target =  this.scroll.last - Distance;
-    // this.scroll.target = this.scroll.last - (Distance/8);
-    // console.log('Dis',Distance) 
-    // console.log('scroll',this.scroll.target)
-    // console.log('move',this.y.end) 
-  }
-  
-  onTouchUp(e) {
-    this.isDown = false
-    // this.speed.target = 0
-    const y = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
-    // this.scroll.target = y;
-    // this.y.end = y;
-    // console.log('up',this.y.end) 
-    // this.scroll.target = this.y.start - this.y.end;
   }
 
   onWheel({ pixelY }) {
@@ -244,40 +190,27 @@ export default class Page {
   // Loop
 
   update() {
-  
-    // this.scroll.target = GSAP.utils.clamp( -this.scroll.limit, 0, this.scroll.target)
-    // this.scroll.target = GSAP.utils.clamp( this.y.end, this.scroll.limit, this.scroll.target)
-    
-    // ----------------------------------------------------------------------------
-    // OG CODE
-  
-    this.scroll.target = GSAP.utils.clamp( 0, this.scroll.limit, this.scroll.target);
+    this.scroll.target = GSAP.utils.clamp(
+      0,
+      this.scroll.limit,
+      this.scroll.target
+    );
 
-    this.scroll.current = GSAP.utils.interpolate( this.scroll.current, this.scroll.target, 0.35);
-
+    this.scroll.current = GSAP.utils.interpolate(
+      this.scroll.current,
+      this.scroll.target,
+      0.1
+    );
 
     if (this.scroll.current < 0.01) {
       this.scroll.current = 0;
     }
 
-        if (this.elements.wrapper) {
-          this.elements.wrapper.style[
-            this.transformPrefix
-          ] = `translateY(-${this.scroll.current}px)`;
-        }
-        // OG CODE
-        // ----------------------------------------------------------------------------------
-        // this.scroll.current = GSAP.utils.interpolate(this.y.current, this.y.target, this.y.lerp)
-//     if (this.scroll.target < this.scroll.current){
-//       this.y.direction = 'top'
-//       // console.log('top')
-// }
-// else if (this.scroll.target > this.scroll.current){
-//       this.y.direction = 'bottom'
-//       // console.log('bottom')
-// }
-
-
+    if (this.elements.wrapper) {
+      this.elements.wrapper.style[
+        this.transformPrefix
+      ] = `translateY(-${this.scroll.current}px)`;
+    }
   }
 
   // Listeners
